@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>sk.banka</groupId>
+    <artifactId>bank-system-core</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Bank System Core</name>
+    <description>Core logic for the modern banking system project.</description>
+
+    <!--  Centralizuje všetky verzie na jedno miesto ak chcem zmeniť verziu staci tu-->
+    <properties>
+        <!-- Verzie pluginov a knižníc -->
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+        <maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
+        <junit.jupiter.version>5.9.3</junit.jupiter.version>
+        <jacoco.plugin.version>0.8.10</jacoco.plugin.version>
+    </properties>
+
+    <!--    Umožňuje definovať verzie knižníc pre cely projekt a jeho prídavné moduly.
+            Knižnica junit-bom (Bill of Materials) zabezpečí, že všetky súčasti JUnit budú mať
+            navzájom kompatibilné verzie. V sekcii dependencies potom už verziu uvádzať nemusíme.-->
+    <dependencyManagement>
+        <dependencies>
+            <!-- Centralizovaná správa verzií pre testovacie knižnice -->
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Knižnice pre testovanie -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!--    maven-surefire-plugin: Je zodpovedný za spúšťanie testov počas build fázy (mvn test alebo mvn package).
+            jacoco-maven-plugin: Extrémne dôležitý nástroj kvality. Po spustení testov vygeneruje report, ktorý ukazuje,
+            koľko percent vášho kódu je pokrytého testami. Cieľom je mať vysoké pokrytie (ideálne > 80%).
+     -->
+    <build>
+        <plugins>
+            <!-- Plugin pre kompiláciu Java kódu -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <!-- Plugin pre spúšťanie unit testov -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+            </plugin>
+            <!-- Plugin pre meranie pokrytia kódu testami (Code Coverage) -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
